@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: library-management-cicd:latest
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "java", "-version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  selenium:
+    image: selenium/standalone-chrome:4.25.0
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
+
+  test-runner:
+    image: maven:3.9-eclipse-temurin-17
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - maven-repository:/root/.m2
+    environment:
+      SELENIUM_REMOTE_URL: http://selenium:4444/wd/hub
+      APP_BASE_URL: http://app:8080
+    depends_on:
+      - app
+      - selenium
+    command: >
+      sh -c "mvn -B verify
+      -Dselenium.remote.url=http://selenium:4444/wd/hub
+      -Dapp.base.url=http://app:8080"
+
+volumes:
+  maven-repository:

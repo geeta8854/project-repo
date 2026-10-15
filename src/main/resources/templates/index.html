@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="container">
+    <header>
+        <p class="eyebrow">LIBRARY MANAGEMENT</p>
+        <h1>Book Register</h1>
+        <p class="subtitle">Add books and keep a simple record of your library.</p>
+    </header>
+
+    <p id="success-message" class="message success" th:if="${message}" th:text="${message}"></p>
+    <p id="error-message" class="message error" th:if="${error}" th:text="${error}"></p>
+
+    <section class="panel">
+        <h2>Add a book</h2>
+        <form id="book-form" action="/books" method="post">
+            <label for="title">Book title</label>
+            <input id="title" name="title" type="text" placeholder="e.g. Clean Code" required>
+            <label for="author">Author</label>
+            <input id="author" name="author" type="text" placeholder="e.g. Robert C. Martin" required>
+            <button id="add-book-button" type="submit">Add Book</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="table-heading">
+            <h2>Books</h2>
+            <span class="count" th:text="${books.size()} + ' total'">0 total</span>
+        </div>
+        <table id="books-table">
+            <thead><tr><th>#</th><th>Title</th><th>Author</th></tr></thead>
+            <tbody>
+            <tr th:if="${books.isEmpty()}" id="empty-row">
+                <td colspan="3" class="empty">No books yet. Add your first book above.</td>
+            </tr>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.id}">1</td>
+                <td th:text="${book.title}">Clean Code</td>
+                <td th:text="${book.author}">Robert C. Martin</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    <footer>Learning project · Java · Maven · Selenium · Docker · Jenkins</footer>
+</main>
+</body>
+</html>
